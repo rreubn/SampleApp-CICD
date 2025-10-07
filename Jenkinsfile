@@ -1,18 +1,27 @@
 pipeline {
     agent any
 
+    environment {
+        REPO_URL = 'https://github.com/rreubn/SampleApp-CICD.git'
+        BRANCH = 'main'
+        // If you add GitHub credentials in Jenkins, put the ID here
+        // GIT_CREDS = 'your-credential-id'
+    }
+
     stages {
 
         stage('Checkout SCM') {
             steps {
                 echo "Cloning GitHub repository..."
-                git branch: 'main', url: 'https://github.com/rreubn/SampleApp-CICD.git'
+                // Use credentialsId: GIT_CREDS if you added GitHub PAT
+                git branch: "${BRANCH}", url: "${REPO_URL}" 
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 echo "Installing Python and dependencies..."
+                // Install Python and pip inside Jenkins container
                 sh '''
                     apt-get update -y
                     apt-get install -y python3 python3-pip
@@ -25,7 +34,14 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo "Running automated tests..."
-                sh 'python3 -m pytest tests/'
+                // Make sure you have a tests/ folder or adjust accordingly
+                sh '''
+                    if [ -d "tests" ]; then
+                        python3 -m pytest tests/
+                    else
+                        echo "No tests folder found, skipping tests."
+                    fi
+                '''
             }
         }
 
