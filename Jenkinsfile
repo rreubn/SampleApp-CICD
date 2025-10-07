@@ -1,29 +1,56 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON = "python3"
+    }
+
     stages {
-        stage('Clone') {
+
+        stage('Checkout SCM') {
             steps {
-                git 'https://github.com/rreubn/SampleApp-CICD.git'
+                // Pull code from GitHub main branch
+                git branch: 'main', url: 'https://github.com/rreubn/SampleApp-CICD.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                echo "Installing Python dependencies..."
+                sh '''
+                    ${PYTHON} -m pip install --upgrade pip
+                    ${PYTHON} -m pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest tests/'
+                echo "Running automated tests..."
+                sh '''
+                    ${PYTHON} -m pytest tests/
+                '''
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deployment successful! (Simulated for now)'
+                echo "Simulated deployment: Deployment successful!"
+                // In real scenario, you could deploy to cloud (AWS, Heroku, etc.)
             }
+        }
+
+    }
+
+    post {
+        always {
+            echo "Pipeline finished."
+        }
+        success {
+            echo "All stages completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check console output for errors."
         }
     }
 }
