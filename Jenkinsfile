@@ -32,21 +32,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Simulated deployment: Deployment successful!"
-                // In a real scenario, deploy to cloud (AWS, Heroku, etc.)
             }
         }
 
     }
 
     post {
-        always {
-            echo "Pipeline finished."
-        }
-        success {
-            echo "All stages completed successfully!"
-        }
-        failure {
-            echo "Pipeline failed. Check console output for errors."
-        }
+        always { echo "Pipeline finished." }
+        success { echo "All stages completed successfully!" }
+        failure { echo "Pipeline failed. Check console output for errors." }
     }
 }
