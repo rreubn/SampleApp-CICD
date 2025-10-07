@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'python:3.11' } // Run all stages inside Python 3.11 container
-    }
+    agent any
 
     stages {
 
@@ -14,10 +12,12 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                echo "Installing Python dependencies..."
+                echo "Installing Python and dependencies..."
                 sh '''
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    apt-get update -y
+                    apt-get install -y python3 python3-pip
+                    pip3 install --upgrade pip
+                    pip3 install -r requirements.txt
                 '''
             }
         }
@@ -25,14 +25,14 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo "Running automated tests..."
-                sh 'pytest tests/'
+                sh 'python3 -m pytest tests/'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo "Simulated deployment: Deployment successful!"
-                // In real scenario, you could deploy to cloud (AWS, Heroku, etc.)
+                // In a real scenario, deploy to cloud (AWS, Heroku, etc.)
             }
         }
 
