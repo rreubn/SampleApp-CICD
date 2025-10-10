@@ -22,7 +22,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'echo "Deployment step: App ready!"'
+                echo 'Launching Streamlit app...'
+                sh '$VENV/bin/streamlit run app.py &'
             }
         }
     }
